@@ -8,7 +8,6 @@ class Product{
         string name;
         int quantity;
         float pricePerUnit;
-
         void input(){
             cout << "\nEnter product name: ";
             cin.ignore();
@@ -25,8 +24,7 @@ class Product{
                 << setw(15) << pricePerUnit
                 << setw(10) << getTotalPrice() << endl;
         }
-}; 
-
+};
 class Bill{
     Product products[100];
     int productCount;
@@ -39,7 +37,6 @@ class Bill{
             discountPercentage = 0;
             billNumber = 1000 + rand() % (10000 - 1000 + 1); // Random bill number between 1000-10000
         } 
-        
         void getCustomerDetails(){
             cout << "\nEnter customer name: ";
             getline(cin, customerName);
@@ -87,7 +84,6 @@ class Bill{
 
             saveToFile(dt, total, discountAmount, grandTotal);
         }
-
     void saveToFile(string dt, float total, float discountAmount, float grandTotal){
         ofstream file("bill.txt", ios::app);
         if (!file) {
@@ -124,7 +120,6 @@ class Bill{
 }; 
 int main(){
     srand(time(0)); // Seed for random bill number
-
     Bill customer[100];
     int choice, subChoice, customerCount = 0;
 
