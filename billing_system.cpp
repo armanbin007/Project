@@ -84,40 +84,7 @@ class Bill{
 
             saveToFile(dt, total, discountAmount, grandTotal);
         }
-    void saveToFile(string dt, float total, float discountAmount, float grandTotal){
-        ofstream file("bill.txt", ios::app);
-        if (!file) {
-            cout << "Error saving the bill to file!\n";
-            return;
-        }
-
-        file << "=============== Super Shop Bill ===============\n";
-        file << "Bill No: " << billNumber << "\t\tDate: " << dt;
-        file << "Customer: " << customerName << endl;
-        file << left << setw(20) << "Product"
-             << setw(10) << "Qty"
-             << setw(15) << "Price/unit"
-             << setw(10) << "Total" << endl;
-        file << "------------------------------------------------\n";
-
-        for (int i = 0; i < productCount; i++){
-            file << left << setw(20) << products[i].name
-                 << setw(10) << products[i].quantity
-                 << setw(15) << products[i].pricePerUnit
-                 << setw(10) << products[i].getTotalPrice() << endl;
-        }
-
-        file << "------------------------------------------------\n";
-        file << right << setw(40) << "Total: " << total << endl;
-        file << right << setw(40) << "Discount: " << discountAmount << endl;
-        file << right << setw(40) << "Grand Total: " << grandTotal << endl;
-        file << "================================================\n";
-        file << "\t\t\t\tThank You for Shopping!\n";
-
-        file.close();
-        cout << "\nBill saved successfully to 'bill.txt'.\n";
-    }
-}; 
+    
 int main(){
     srand(time(0)); // Seed for random bill number
     Bill customer[100];
