@@ -2,12 +2,45 @@
 #include <iomanip>
 #include <fstream>
 #include <ctime>
+#include <filesystem>
+namespace fs = std::filesystem;
 using namespace std;
+
+void findPreviousBill(){
+    string keyword;
+    cout << "\nEnter customer name or contact number to search: ";
+    cin.ignore();
+    getline(cin, keyword);
+
+    bool found = false;
+    for (const auto& entry : fs::directory_iterator(".")){
+        string filename = entry.path().filename().string();
+
+        if (filename.find("bill_") != string::npos && 
+            (filename.find(keyword) != string::npos)){
+            
+            cout << "\nBill Found in File: " << filename << "\n";
+            ifstream file(filename);
+            string line;
+            while (getline(file, line)){
+                cout << line << endl;
+            }
+            file.close();
+            found = true;
+        }
+    }
+
+    if (!found){
+        cout << "No matching bill found!\n";
+    }
+}
+
 class Product{
     public:
         string name;
         int quantity;
         float pricePerUnit;
+
         void input(){
             cout << "\nEnter product name: ";
             cin.ignore();
@@ -24,12 +57,14 @@ class Product{
                 << setw(15) << pricePerUnit
                 << setw(10) << getTotalPrice() << endl;
         }
-};
+}; 
+
 class Bill{
     Product products[100];
     int productCount;
     float discountPercentage;
     string customerName;
+    string contactNumber;
     int billNumber;
     public:
         Bill(){
@@ -37,9 +72,12 @@ class Bill{
             discountPercentage = 0;
             billNumber = 1000 + rand() % (10000 - 1000 + 1); // Random bill number between 1000-10000
         } 
+        
         void getCustomerDetails(){
             cout << "\nEnter customer name: ";
             getline(cin, customerName);
+            cout << "Enter contact number: ";
+            getline(cin, contactNumber);
         } void addProduct(){
                 products[productCount].input();
                 productCount++;
@@ -65,6 +103,7 @@ class Bill{
             cout << "\n=============== Super Shop Bill ===============\n";
             cout << "Bill No: " << billNumber << "\t\tDate: " << dt;
             cout << "Customer: " << customerName << endl;
+            cout << "Contact No: " << contactNumber << endl;
             cout << left << setw(20) << "Product"
                 << setw(10) << "Qty"
                 << setw(15) << "Price/unit"
@@ -84,16 +123,59 @@ class Bill{
 
             saveToFile(dt, total, discountAmount, grandTotal);
         }
-    
+
+    void saveToFile(string dt, float total, float discountAmount, float grandTotal){
+        string filename = "bill_" + to_string(billNumber) + "_" + customerName + "_" + contactNumber + ".txt";
+
+        // remove spaces from filename
+        for (char &ch : filename){
+            if (ch == ' ')
+                ch = '_';
+        } ofstream file(filename);
+        if (!file){
+            cout << "Error saving the bill to file!\n";
+            return;
+        }
+
+        file << "=============== Super Shop Bill ===============\n";
+        file << "Bill No: " << billNumber << "\t\tDate: " << dt;
+        file << "Customer: " << customerName << endl;
+        file << "Contact No: " << contactNumber << endl;
+        file << left << setw(20) << "Product"
+             << setw(10) << "Qty"
+             << setw(15) << "Price/unit"
+             << setw(10) << "Total" << endl;
+        file << "------------------------------------------------\n";
+
+        for (int i = 0; i < productCount; i++){
+            file << left << setw(20) << products[i].name
+                 << setw(10) << products[i].quantity
+                 << setw(15) << products[i].pricePerUnit
+                 << setw(10) << products[i].getTotalPrice() << endl;
+        }
+
+        file << "------------------------------------------------\n";
+        file << right << setw(40) << "Total: " << total << endl;
+        file << right << setw(40) << "Discount: " << discountAmount << endl;
+        file << right << setw(40) << "Grand Total: " << grandTotal << endl;
+        file << "================================================\n";
+        file << "\t\t\t\tThank You for Shopping!\n";
+
+        file.close();
+        cout << "\nBill saved successfully to 'bill.txt'.\n";
+    }
+}; 
 int main(){
     srand(time(0)); // Seed for random bill number
+
     Bill customer[100];
     int choice, subChoice, customerCount = 0;
 
     cout << "===== Welcome to Super Shop Billing System =====\n";
     do{
         cout << "\n1. Create New Bill for Customer\n"
-             << "2. Exit\n"
+             << "2. Search Previous Bill\n"
+             << "3. Exit\n"
              << "Enter your choice: ";
         cin >> choice;
         switch (choice){
@@ -122,11 +204,14 @@ int main(){
         customerCount++;
         break;
     case 2:
+        findPreviousBill();
+        break;
+    case 3:
         cout << "Thank you! Exiting...\n";
         break;
     default:
         cout << "Invalid choice! Try again.\n";
         }
-    } while (choice != 2);
+    } while (choice != 3);
     return 0;
 }
