@@ -45,10 +45,27 @@ class Product{
             cout << "\nEnter product name: ";
             cin.ignore();
             getline(cin, name);
+            while(true){
             cout << "Enter quantity: ";
             cin >> quantity;
+            if (cin.fail() || quantity < 0) {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input! Quantity must be a positive number.\n";
+            } else {
+            break; // valid input → exit loop
+            }
+        }   while(true){
             cout << "Enter price per unit: ";
             cin >> pricePerUnit;
+            if (cin.fail() || pricePerUnit < 0) {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input! Price must be a positive number.\n";
+            } else {
+            break; // valid input → exit loop
+            }
+        }
         } float getTotalPrice(){
             return quantity * pricePerUnit;
         } void display(){
@@ -175,17 +192,35 @@ int main(){
     do{
         cout << "\n1. Create New Bill for Customer\n"
              << "2. Search Previous Bill\n"
-             << "3. Exit\n"
-             << "Enter your choice: ";
+             << "3. Exit\n";
+        while(true){
+        cout << "Enter your choice: ";
         cin >> choice;
+        if (cin.fail() || choice <= 0) {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input! Choose between 1-3.\n";
+        } else {
+            break; // valid input → exit loop
+        }
+    }
         switch (choice){
     case 1:
         cin.ignore();
         customer[customerCount].getCustomerDetails(); 
     do{
         cout << "\n1. Add Product\n2. Apply Discount\n3. Print and Save Bill\n";
+        while(true){
         cout << "Enter your choice: ";
         cin >> subChoice;
+        if (cin.fail() || subChoice <= 0) {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input! Choose between 1-3.\n";
+        } else {
+            break; // valid input → exit loop
+        }
+    }
 
         switch(subChoice){
             case 1:
