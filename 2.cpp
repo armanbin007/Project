@@ -35,7 +35,9 @@ void findPreviousBill(){
     cout << "\nEnter customer name or contact number to search: ";
     cin.ignore();
     getline(cin, keyword);
-
+    for (char &ch : keyword) {
+    if (ch == ' ') ch = '_';
+    }
     bool found = false;
     for (const auto& entry : fs::directory_iterator(".")){
         string filename = entry.path().filename().string();
@@ -204,7 +206,7 @@ class Bill{
         void saveToFile(string dt, float total, float discountAmount, float grandTotal){
             string filename = "bill_" + to_string(billNumber) + "_" + customerName + "_" + contactNumber + ".txt";
             for (char &ch : filename){
-                if (ch == ' ') ch = '_';
+                // if (ch == ' ') ch = '_';
             }
             ofstream file(filename);
             if (!file){
